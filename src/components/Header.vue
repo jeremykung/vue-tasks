@@ -15,3 +15,9 @@ export default {
     }
 }
 </script>
+
+<style>
+    header {
+        padding: 1rem;
+    }
+</style>

@@ -1,17 +1,70 @@
 <template>
   <div class="container">
-    <Header title="To Do" />
-    <Button />
+    <nav>
+      <Header title="Reminders" />
+      <Button 
+        @click="showAddForm = !showAddForm" 
+        :text="showAddForm ? 'Close Form' : 'Add New'" 
+      />
+    </nav>
+    <AddTask 
+      v-show="showAddForm" 
+      @new-reminder="newReminder => addTask(newReminder)" 
+    />
+    <Tasks 
+      :tasks="tasks"
+      @del-task="id => delTask(id)"
+      @toggle-reminder="id => toggleReminder(id)"
+    />
   </div>
 </template>
 
 <script>
 import Header from '@/components/Header'
 import Button from '@/components/Button'
+import Tasks from '@/components/Tasks'
+import AddTask from '@/components/AddTask'
 
 export default {
   name: 'App',
-  components: { Header, Button }
+  components: { Header, Button, Tasks, AddTask },
+  data() {
+    return {
+      tasks: [],
+      showAddForm: false
+    }
+  },
+  methods: {
+    delTask(id) {
+      this.tasks = this.tasks.filter(task => task.id !== id)
+    },
+    toggleReminder(id) {
+      console.log('toggle', id)
+      this.tasks = this.tasks.map(task => task.id === id ? {...task, reminder: !task.reminder} : task)
+    },
+    addTask(newReminder) {
+      this.tasks = [...this.tasks, newReminder]
+    }
+  },
+  created() {
+    this.tasks = [
+      {
+        id: 1,
+        text: 'Review vue',
+        reminder: true
+      },
+      {
+        id: 2,
+        text: 'Finish tut',
+        reminder: false
+      },
+      {
+        id: 3,
+        text: 'Create recipes',
+        reminder: true
+      }
+    ]
+  }
 }
 </script>
 
@@ -22,5 +75,12 @@ export default {
   margin: 0;
   padding: 0;
   font-family: 'Noto Sans Display', sans-serif;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
 }
 </style>
